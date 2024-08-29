@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  password String
+  name    String @db.VarChar(255)
+  bookings Booking[]
+  payments Payment[]
+  // role String @db.VarChar(50) @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Flight {
+  id        Int      @id @default(autoincrement())
+  airline     String   @db.VarChar(255)
+  flightNumber     String   @db.VarChar(255)
+  origin     String   @db.VarChar(255)
+  destination     String   @db.VarChar(255)
+  departureDate     DateTime  
+  arrivalDate       DateTime
+  EconomyPrice Decimal @db.Decimal(10, 2)
+  BusinessPrice Decimal @db.Decimal(10, 2)
+  capacity Int
+  bookings Booking[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Booking {
+  id Int @id @default(autoincrement())
+  passengerName String @db.VarChar(100)
+  passengerEmail String @db.VarChar(100)
+  passengerAge Int
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  flight Flight @relation(fields: [flightId], references: [id])
+  flightId Int
+  payment Payment @relation(fields: [paymentId], references: [id])
+  paymentId Int
+  // reservation Reservation
+  price Decimal
+  payment_status String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Payment {
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  paymentMethod String @db.VarChar(100)
+  cardNumber Int
+  expiry String
+  bookings Booking[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// rm -rf prisma/migrations
+// npx prisma migrate reset
+// npx prisma migrate dev --name init
+// npx prisma generate
+// npx prisma db seed -- --count 50  

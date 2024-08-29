@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: pg_db
+    image: postgres
+    environment:
+      - POSTGRES_USER=lwinhtet
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=flight_booking_system
+      # - PGDATA=/var/lib/postgresql/data/pgdata
+      # - POSTGRES_HOST_AUTH_METHOD=md5
+    volumes:
+      - fbs-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - fbs
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+    networks:
+      - fbs
+    environment:
+      - DATABASE_URL=postgresql://lwinhtet:password@pg_db:5432/flight_booking_system?schema=public
+    command: >
+      sh -c "
+        npx prisma migrate deploy &&
+        npx prisma db seed -- --count 50 &&
+        npm start
+      "
+
+  react:
+    build:
+      context: ./frontend
+    ports:
+      - '3000:3000'
+    networks:
+      - fbs
+
+networks:
+  fbs:
+    driver: bridge
+
+volumes:
+  fbs-data:
