@@ -48,5 +48,5 @@ It might take around 20-30 seconds to build the containers, run migrations, and 
 ## Notes
 
 - I chose this stack because it allows for the separation of the application, API, and database, making it more scalable and flexible. While this approach may be harder to manage, it provides full control over the application’s components.
-- I could have used PHP/Laravel, where I have over 3 years of experience, or Java with Spring, which I’m currently working on to improve proficiency. Each stack has its own pros and cons, but my primary goal is to solve the problem effectively and build a robust and efficient system.
+- I could have used PHP/Laravel, where I have over 3 years of experience, or Java with Spring, which I’m currently working on to improve proficiency.
 - If you encounter any issues during testing, feel free to contact me.
