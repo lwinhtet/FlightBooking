@@ -174,6 +174,8 @@ const useFlightSearchForm = () => {
     errorMessage,
     setErrorMessage,
     fetchFlights,
+    setDepartFlights,
+    setReturnFlights,
   ] as const;
 };
 

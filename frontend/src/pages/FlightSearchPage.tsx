@@ -10,7 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { destinations, origins } from '@/constants/cities';
 import { TripType } from '@/interfaces/tripType';
 import Flight from '@/interfaces/Flight';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import useFlightSearchForm from '@/hooks/useFlightSearchForm';
 import FlightCard from '@/components/FlightCard';
@@ -48,12 +48,18 @@ const FlightSearchPage = () => {
     errorMessage,
     setErrorMessage,
     fetchFlights,
+    setDepartFlights,
+    setReturnFlights,
   ] = useFlightSearchForm();
 
   const onSelectDepartFlight = (flight: Flight) => {
     setDepartFlight(flight);
     storeLocalStorageData('departFlight', flight);
-    setStep(2);
+    if (formData.tripType === TripType.ROUND_TRIP) {
+      setStep(2);
+    } else {
+      navigate('/bookingDetails');
+    }
   };
 
   const onEditDepartFlight = () => {
@@ -83,6 +89,24 @@ const FlightSearchPage = () => {
 
     await fetchFlights();
   };
+
+  useEffect(() => {
+    setStep(1);
+    if (formData.tripType === TripType.ONE_WAY) {
+      setReturnFlight(undefined);
+      removeLocalStorageData('returnFlight');
+    }
+    setDepartFlight(undefined);
+    removeLocalStorageData('departFlight');
+    setDepartFlights(undefined);
+    setReturnFlights(undefined);
+  }, [
+    formData.tripType,
+    setDepartFlight,
+    setDepartFlights,
+    setReturnFlight,
+    setReturnFlights,
+  ]);
 
   const TripTypeRadioGroup = (
     <RadioGroup
