@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useBooking from '@/hooks/useBooking';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/components/ui/use-toast';
 import { getToken } from '@/utils/responseHelper';
@@ -22,6 +22,12 @@ const BookingDetailPage = () => {
   const departPrice = Number(departFlight?.EconomyPrice) || 0;
   const returnPrice = Number(returnFlight?.EconomyPrice) || 0;
   const totalAmount = departPrice + returnPrice;
+
+  useEffect(() => {
+    if (departFlight === undefined) {
+      navigate('/flights');
+    }
+  }, [departFlight, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
