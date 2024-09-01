@@ -58,6 +58,10 @@ const FlightSearchPage = () => {
     if (formData.tripType === TripType.ROUND_TRIP) {
       setStep(2);
     } else {
+      if (!isAuthenticated) {
+        toastPlsLogin();
+        return;
+      }
       navigate('/bookingDetails');
     }
   };
@@ -70,11 +74,7 @@ const FlightSearchPage = () => {
 
   const onSelectReturnFlight = (flight: Flight) => {
     if (!isAuthenticated) {
-      toast({
-        title: 'Please Log In to Book a Flight',
-        description:
-          'To proceed with booking a flight, you need to be logged in. Please sign in to your account or register if you don’t have one.',
-      });
+      toastPlsLogin();
       return;
     }
     setReturnFlight(flight);
@@ -107,6 +107,14 @@ const FlightSearchPage = () => {
     setReturnFlight,
     setReturnFlights,
   ]);
+
+  const toastPlsLogin = () => {
+    toast({
+      title: 'Please Log In to Book a Flight',
+      description:
+        'To proceed with booking a flight, you need to be logged in. Please sign in to your account or register if you don’t have one.',
+    });
+  };
 
   const TripTypeRadioGroup = (
     <RadioGroup
