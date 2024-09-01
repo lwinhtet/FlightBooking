@@ -64,7 +64,7 @@ model Payment {
   user User @relation(fields: [userId], references: [id])
   userId Int
   paymentMethod String @db.VarChar(100)
-  cardNumber Int
+  cardNumber String @db.VarChar(20)
   expiry String
   bookings Booking[]
   createdAt DateTime @default(now())

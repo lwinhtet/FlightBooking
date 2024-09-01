@@ -118,9 +118,11 @@ const BookingDetailPage = () => {
                   Age
                 </Label>
                 <Input
-                  type="number"
+                  type="text"
                   id="passengerAge"
                   placeholder="30"
+                  pattern="\d*"
+                  maxLength={3}
                   className="col-span-3"
                   value={passengerAge}
                   onChange={(e) => setPassengerAge(e.target.value)}
@@ -140,9 +142,11 @@ const BookingDetailPage = () => {
                   Card Number
                 </Label>
                 <Input
-                  type="number"
+                  type="text"
                   id="cardNumber"
                   placeholder="**** **** **** 1234"
+                  pattern="\d*"
+                  maxLength={20}
                   className="col-span-3"
                   value={cardNumber}
                   onChange={(e) => setCardNumber(e.target.value)}

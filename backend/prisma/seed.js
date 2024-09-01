@@ -62,7 +62,7 @@ async function main() {
   await prisma.booking.deleteMany({});
   await prisma.user.deleteMany({});
 
-  console.log('💥  All records have been deleted.');
+  console.log('💥  All records have been deleted. Creating New Data...');
 
   const {
     values: { count = DEFAULT_COUNT },

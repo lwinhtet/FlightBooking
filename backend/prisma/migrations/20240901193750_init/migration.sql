@@ -50,7 +50,7 @@ CREATE TABLE "Payment" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "paymentMethod" VARCHAR(100) NOT NULL,
-    "cardNumber" INTEGER NOT NULL,
+    "cardNumber" VARCHAR(20) NOT NULL,
     "expiry" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

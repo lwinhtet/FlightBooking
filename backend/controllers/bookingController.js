@@ -18,7 +18,7 @@ export const saveBooking = catchAsync(async (req, res, next) => {
   const payment = await prisma.payment.create({
     data: {
       userId: user.id,
-      cardNumber: Number(cardNumber),
+      cardNumber: cardNumber,
       expiry: expiryDate,
       paymentMethod: 'card',
     },
