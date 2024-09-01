@@ -53,8 +53,6 @@ const FlightSearchPage = () => {
   ] = useFlightSearchForm();
 
   const onSelectDepartFlight = (flight: Flight) => {
-    setDepartFlight(flight);
-    storeLocalStorageData('departFlight', flight);
     if (formData.tripType === TripType.ROUND_TRIP) {
       setStep(2);
     } else {
@@ -64,6 +62,8 @@ const FlightSearchPage = () => {
       }
       navigate('/bookingDetails');
     }
+    setDepartFlight(flight);
+    storeLocalStorageData('departFlight', flight);
   };
 
   const onEditDepartFlight = () => {
