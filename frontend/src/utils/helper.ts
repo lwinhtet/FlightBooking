@@ -3,7 +3,7 @@ import { IFormInput } from '@/pages/FlightSearchPage';
 
 export const toQueryStringForFlightsSearch = (input: IFormInput): string => {
   const params = new URLSearchParams();
-  console.log(input);
+
   params.append('origin', input.origin);
   params.append('destination', input.destination);
   params.append('tripType', input.tripType);
@@ -24,4 +24,11 @@ export const formatUTCToLocalTime = (isoDateString: string): string => {
   const hours = String(date.getUTCHours()).padStart(2, '0');
   const minutes = String(date.getUTCMinutes()).padStart(2, '0');
   return `${hours}:${minutes}`;
+};
+
+export const isDateDisabled = (date: Date) => {
+  const today = new Date();
+  // Set time to midnight for accurate comparison
+  today.setHours(0, 0, 0, 0);
+  return date < today;
 };

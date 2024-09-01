@@ -32,7 +32,7 @@ export function SelectScrollable({
       </SelectTrigger>
       <SelectContent>
         <SelectItem key={0} value="0">
-          Select Origin
+          ---
         </SelectItem>
         {items}
       </SelectContent>

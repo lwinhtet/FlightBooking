@@ -17,6 +17,10 @@ import FlightCard from '@/components/FlightCard';
 import useBooking from '@/hooks/useBooking';
 import useAuth from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import {
+  removeLocalStorageData,
+  storeLocalStorageData,
+} from '@/utils/storageUtils';
 
 export interface IFormInput {
   origin: string;
@@ -30,7 +34,7 @@ const FlightSearchPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2>(1);
-  const { setDepartFlight, setReturnFlight } = useBooking();
+  const { departFlight, setDepartFlight, setReturnFlight } = useBooking();
 
   const [
     formData,
@@ -46,14 +50,19 @@ const FlightSearchPage = () => {
     fetchFlights,
   ] = useFlightSearchForm();
 
-  const onDepartFlightSelect = (flight: Flight) => {
+  const onSelectDepartFlight = (flight: Flight) => {
     setDepartFlight(flight);
+    storeLocalStorageData('departFlight', flight);
     setStep(2);
   };
 
-  const onReturnFlightSelect = (flight: Flight) => {
-    setReturnFlight(flight);
+  const onEditDepartFlight = () => {
+    setDepartFlight(undefined);
+    removeLocalStorageData('departFlight');
+    setStep(1);
+  };
 
+  const onSelectReturnFlight = (flight: Flight) => {
     if (!isAuthenticated) {
       toast({
         title: 'Please Log In to Book a Flight',
@@ -62,7 +71,8 @@ const FlightSearchPage = () => {
       });
       return;
     }
-
+    setReturnFlight(flight);
+    storeLocalStorageData('returnFlight', flight);
     navigate('/bookingDetails');
   };
 
@@ -114,7 +124,7 @@ const FlightSearchPage = () => {
   const SearchFlightInputs = (
     <form onSubmit={handleSubmit}>
       <div className="flex-between max-w-6xl mx-auto">
-        <div className="flex flex-row gap-5">
+        <div className="flex flex-row flex-nowrap gap-5">
           <div className="flex flex-col items-start space-y-2">
             <Label htmlFor="terms" className="font-light text-[12px]">
               Flying From:
@@ -139,7 +149,10 @@ const FlightSearchPage = () => {
           </div>
           {DatePickerContent}
         </div>
-        <Button type="submit" className="self-end mx-10">
+        <Button
+          type="submit"
+          className="self-end mx-10 w-full bg-my-primary hover:bg-my-third"
+        >
           Search
         </Button>
       </div>
@@ -177,7 +190,7 @@ const FlightSearchPage = () => {
         key={flight.id}
         flight={flight}
         flightType="depart"
-        onSelect={onDepartFlightSelect}
+        onSelect={onSelectDepartFlight}
       />
     ));
   };
@@ -199,7 +212,7 @@ const FlightSearchPage = () => {
         key={flight.id}
         flight={flight}
         flightType="return"
-        onSelect={onReturnFlightSelect}
+        onSelect={onSelectReturnFlight}
       />
     ));
   };
@@ -209,16 +222,19 @@ const FlightSearchPage = () => {
       <Toaster />
       <div className="fixed top-16 left-0 w-full bg-main-2 p-6 shadow-md z-40">
         {TripTypeRadioGroup}
+
         {SearchFlightInputs}
-      </div>
-      <div className="pt-[7rem]">
         {errorMessage && (
-          <div className="mt-4 text-red-700">{errorMessage}</div>
+          <div className="mt-4 text-red-700 max-w-[1150px] mx-auto border border-solid border-gray-300 px-7 py-1.5 rounded-md">
+            {errorMessage}
+          </div>
         )}
+      </div>
+      <div className="pt-[8rem]">
         <div className="flex flex-row space-x-4">
           {/* Filter */}
           <div className="w-1/4 p-4 rounded-lg">
-            <h2 className="text-lg text-left font-medium mb-4">Filter By</h2>
+            <h2 className="text-base text-left font-medium mb-4">Filter By</h2>
             <Separator className="my-4" />
           </div>
 
@@ -239,8 +255,25 @@ const FlightSearchPage = () => {
 
             {step === 2 && (
               <>
+                {departFlight && (
+                  <>
+                    <div className="flex flex-col mb-4">
+                      <h2 className="text-base text-left font-medium mb-4">
+                        Selected Departing Flights
+                      </h2>
+                      <div className="flex flex-col gap-y-4">
+                        <FlightCard
+                          flight={departFlight}
+                          flightType="depart"
+                          onEdit={onEditDepartFlight}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 {returnFlights && returnFlights.length > 0 && (
-                  <h2 className="text-lg text-left font-medium mb-4">
+                  <h2 className="text-base text-left font-medium mb-4">
                     Return Flights
                   </h2>
                 )}

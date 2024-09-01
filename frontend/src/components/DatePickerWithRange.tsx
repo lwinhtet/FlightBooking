@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { isDateDisabled } from '@/utils/helper';
 // import { useState } from 'react';
 
 interface DateRangePickerProps {
@@ -23,10 +24,7 @@ export function DatePickerWithRange({
   setDate,
   className,
 }: DateRangePickerProps) {
-  // const [date, setDate] = useState<DateRange | undefined>({
-  //   from: new Date(2022, 0, 20),
-  //   to: addDays(new Date(2022, 0, 20), 6),
-  // });
+  const disableDates = (date: Date) => isDateDisabled(date);
 
   return (
     <div className={cn('grid gap-2', className)}>
@@ -63,6 +61,7 @@ export function DatePickerWithRange({
             selected={date}
             onSelect={setDate}
             numberOfMonths={2}
+            disabled={disableDates}
           />
         </PopoverContent>
       </Popover>

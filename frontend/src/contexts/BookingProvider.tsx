@@ -1,4 +1,5 @@
 import Flight from '@/interfaces/Flight';
+import { getLocalStorageData } from '@/utils/storageUtils';
 import React, { createContext, useState, ReactElement } from 'react';
 
 export interface BookingContextType {
@@ -20,11 +21,13 @@ const BookingContext = createContext<BookingContextType>(initBookingState);
 type ChildrenType = { children?: ReactElement | ReactElement[] };
 
 export const BookingProvider = ({ children }: ChildrenType): ReactElement => {
+  const initDF = getLocalStorageData('departFlight');
+  const initRF = getLocalStorageData('returnFlight');
   const [departFlight, setDepartFlight] = useState<Flight | undefined>(
-    undefined
+    initDF ? initDF : undefined
   );
   const [returnFlight, setReturnFlight] = useState<Flight | undefined>(
-    undefined
+    initRF ? initRF : undefined
   );
 
   return (

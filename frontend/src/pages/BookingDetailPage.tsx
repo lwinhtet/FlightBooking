@@ -7,6 +7,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/components/ui/use-toast';
 import { getToken } from '@/utils/responseHelper';
 import { useNavigate } from 'react-router-dom';
+import { removeLocalStorageData } from '@/utils/storageUtils';
 
 const BookingDetailPage = () => {
   const { departFlight, returnFlight } = useBooking();
@@ -64,6 +65,9 @@ const BookingDetailPage = () => {
         description:
           'Your flight has been booked successfully. You will receive a confirmation email shortly with all the details of your reservation.',
       });
+      removeLocalStorageData('departFlight');
+      removeLocalStorageData('returnFlight');
+      removeLocalStorageData('flightSearchParams');
       navigate('/');
     } catch (error) {
       console.error('Error:', error);

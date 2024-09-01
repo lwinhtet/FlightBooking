@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { isDateDisabled } from '@/utils/helper';
 // import { useState } from 'react';
 
 interface DatePickerProps {
@@ -17,7 +18,7 @@ interface DatePickerProps {
 }
 
 export function DatePicker({ date, setDate }: DatePickerProps) {
-  // const [date, setDate] = useState<Date>();
+  const disableDates = (date: Date) => isDateDisabled(date);
 
   return (
     <Popover>
@@ -39,6 +40,7 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
           selected={date}
           onSelect={setDate}
           initialFocus
+          disabled={disableDates}
         />
       </PopoverContent>
     </Popover>

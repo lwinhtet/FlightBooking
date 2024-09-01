@@ -39,13 +39,4 @@ router.post(
 
 router.post('/logout', logout);
 
-// admin routes
-// router.use(authz('admin'));
-// router.route('/').get(getAllUsers);
-// router
-//   .route('/:id')
-//   .get(getUserWithArtworks)
-//   .patch(updateUser)
-//   .delete(deleteUser);
-
 export default router;

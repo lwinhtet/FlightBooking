@@ -2,9 +2,21 @@ import { Link } from 'react-router-dom';
 import MainAuthDialog from './auth/MainAuthDialog';
 import useAuth from '@/hooks/useAuth';
 import { Button } from './ui/button';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const onClickLogout = () => {
+    logout();
+    const currentPath = location.pathname;
+
+    if (['/bookingDetails'].includes(currentPath)) {
+      navigate('/', { replace: true });
+    }
+  };
 
   const authContent = isAuthenticated ? (
     <>
@@ -19,7 +31,7 @@ const Navbar = () => {
           height: '32px',
         }}
       />
-      <Button variant="link" onClick={() => logout()}>
+      <Button variant="link" onClick={onClickLogout}>
         Logout
       </Button>
     </>
@@ -30,7 +42,7 @@ const Navbar = () => {
   return (
     <nav className="flex-between fixed z-50 w-full bg-main-2 top-0 left-0 px-6 py-4 lg:px-20 shadow-sm">
       <Link to="/" className="flex items-center gap-1">
-        <p className="text-[26px] font-extrabold text-black max-sm:hidden">
+        <p className="text-[26px] font-extrabold text-my-primary max-sm:hidden">
           Lwin
         </p>
       </Link>

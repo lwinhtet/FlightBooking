@@ -5,7 +5,7 @@ import {
 } from '@/utils/responseHelper';
 import { createContext, useState, ReactNode, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { storeUserData } from '@/utils/storageUtils';
+import { removeLocalStorageData, storeUserData } from '@/utils/storageUtils';
 
 export interface AuthContextType {
   isAuthenticated: boolean;
@@ -30,6 +30,7 @@ const AuthContext = createContext<AuthContextType>(initState);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!getToken());
+
   const { toast } = useToast();
 
   useEffect(() => {
@@ -115,6 +116,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
 
     if (response.status === 200) {
+      removeLocalStorageData('user');
       setIsAuthenticated(false);
       setLogoutCookie();
     }

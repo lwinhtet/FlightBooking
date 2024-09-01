@@ -5,11 +5,18 @@ import { TripType } from '@/interfaces/tripType';
 import { addDays } from 'date-fns';
 import { toQueryStringForFlightsSearch } from '@/utils/helper';
 import Flight from '@/interfaces/Flight';
+import { useNavigate } from 'react-router-dom';
+import {
+  getLocalStorageData,
+  removeLocalStorageData,
+  storeLocalStorageData,
+} from '@/utils/storageUtils';
 
 const useFlightSearchForm = () => {
+  const navigate = useNavigate();
   const currentDate = new Date();
 
-  const storedFormData = localStorage.getItem('flightSearchParams');
+  const storedFormData = getLocalStorageData('flightSearchParams');
 
   let initialValues = {
     origin: '',
@@ -22,12 +29,11 @@ const useFlightSearchForm = () => {
   };
 
   if (storedFormData) {
-    const parsed = JSON.parse(storedFormData);
-    const { from, to } = parsed.dates;
+    const { from, to } = storedFormData.dates;
     initialValues = {
-      origin: parsed.origin,
-      destination: parsed.destination,
-      tripType: parsed.tripType,
+      origin: storedFormData.origin,
+      destination: storedFormData.destination,
+      tripType: storedFormData.tripType,
       dates: {
         from: new Date(from),
         to: new Date(to),
@@ -44,25 +50,29 @@ const useFlightSearchForm = () => {
   );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const displayErrorMsg = () =>
+  const resetParams = () => {
     setErrorMessage('Please fill in all required search fields.');
+    // remove query string
+    navigate('/flights', { replace: true });
+    removeLocalStorageData('flightSearchParams');
+  };
 
   const fetchFlights = async () => {
     const { origin, destination, tripType, dates } = values;
     const { from: departDate, to: returnDate } = dates as DateRange;
 
     if (!origin || !destination || !tripType) {
-      displayErrorMsg();
+      resetParams();
       return;
     }
 
     if (tripType === TripType.ROUND_TRIP && (!departDate || !returnDate)) {
-      displayErrorMsg();
+      resetParams();
       return;
     }
 
     if (tripType === TripType.ONE_WAY && !departDate) {
-      displayErrorMsg();
+      resetParams();
       return;
     }
 
@@ -71,7 +81,7 @@ const useFlightSearchForm = () => {
     const url = `${import.meta.env.VITE_API_BASE_URL}/flights?${queryString}`;
     const newUrl = `${window.location.pathname}?${queryString}`;
     window.history.pushState({ path: newUrl }, '', newUrl);
-    localStorage.setItem('flightSearchParams', JSON.stringify(values));
+    storeLocalStorageData('flightSearchParams', values);
 
     try {
       const response = await fetch(url, {
@@ -114,12 +124,11 @@ const useFlightSearchForm = () => {
   const onDestinationChange = (value: string) => {
     setValues({
       ...values,
-      destination: value,
+      destination: value !== '0' ? value : '',
     });
   };
 
   const handleTypeTripChange = (value: string) => {
-    console.log(44, value);
     setValues({
       ...values,
       tripType: value,
